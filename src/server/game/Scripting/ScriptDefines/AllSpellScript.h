@@ -19,6 +19,7 @@
 #define SCRIPT_OBJECT_ALL_SPELL_SCRIPT_H_
 
 #include "ScriptObject.h"
+#include "SharedDefines.h"
 #include <vector>
 
 enum AllSpellHook
@@ -38,6 +39,9 @@ enum AllSpellHook
     ALLSPELLHOOK_ON_CAST,
     ALLSPELLHOOK_ON_PREPARE,
     ALLSPELLHOOK_ON_IS_AURA_EXCLUSIVE_BY_SPECIFIC_WITH,
+    ALLSPELLHOOK_ON_GET_DIMINISHING_RETURNS_GROUP,
+    ALLSPELLHOOK_ON_GET_DIMINISHING_RETURNS_GROUP_TYPE,
+    ALLSPELLHOOK_ON_GET_DIMINISHING_RETURNS_LIMIT_DURATION,
     ALLSPELLHOOK_END
 };
 
@@ -70,6 +74,32 @@ public:
     virtual void OnBeforeAuraRankForLevel(SpellInfo const* /*spellInfo*/, SpellInfo const* /*latestSpellInfo*/, uint8 /*level*/) { }
 
     virtual void OnIsAuraExclusiveBySpecificWith(SpellInfo const* /*spellInfo*/, SpellInfo const* /*otherSpellInfo*/, bool& /*isExclusive*/) { }
+
+    /**
+     * @brief Called after the core picks the diminishing returns group of a spell: the script can change it.
+     *
+     * @param spellInfo The spell
+     * @param triggered Whether the spell was triggered by an aura (triggered stuns/roots have their own groups)
+     * @param group The group the core picked
+     */
+    virtual void OnGetDiminishingReturnsGroup(SpellInfo const* /*spellInfo*/, bool /*triggered*/, DiminishingGroup& /*group*/) { }
+
+    /**
+     * @brief Called after the core picks whom a diminishing returns group applies to (players only, all, or none).
+     *
+     * @param group The diminishing returns group
+     * @param type The type the core picked
+     */
+    virtual void OnGetDiminishingReturnsGroupType(DiminishingGroup /*group*/, DiminishingReturnsType& /*type*/) { }
+
+    /**
+     * @brief Called after the core picks the PvP duration limit of a diminished spell (0 = no limit).
+     *
+     * @param group The diminishing returns group
+     * @param spellInfo The spell
+     * @param duration The limit the core picked, in milliseconds
+     */
+    virtual void OnGetDiminishingReturnsLimitDuration(DiminishingGroup /*group*/, SpellInfo const* /*spellInfo*/, int32& /*duration*/) { }
 
     /**
      * @brief This hook called after spell dummy effect

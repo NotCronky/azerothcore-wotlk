@@ -104,7 +104,7 @@ void SpellMgr::LoadCreatureImmunities()
     }
 }
 
-DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellInfo const* spellproto, bool triggered)
+static DiminishingGroup GetCoreDiminishingReturnsGroupForSpell(SpellInfo const* spellproto, bool triggered)
 {
     if (spellproto->IsPositive())
         return DIMINISHING_NONE;
@@ -291,7 +291,14 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellInfo const* spellproto,
     return DIMINISHING_NONE;
 }
 
-DiminishingReturnsType GetDiminishingReturnsGroupType(DiminishingGroup group)
+DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellInfo const* spellproto, bool triggered)
+{
+    DiminishingGroup group = GetCoreDiminishingReturnsGroupForSpell(spellproto, triggered);
+    sScriptMgr->OnGetDiminishingReturnsGroup(spellproto, triggered, group);
+    return group;
+}
+
+static DiminishingReturnsType GetCoreDiminishingReturnsGroupType(DiminishingGroup group)
 {
     switch (group)
     {
@@ -310,6 +317,13 @@ DiminishingReturnsType GetDiminishingReturnsGroupType(DiminishingGroup group)
     }
 }
 
+DiminishingReturnsType GetDiminishingReturnsGroupType(DiminishingGroup group)
+{
+    DiminishingReturnsType type = GetCoreDiminishingReturnsGroupType(group);
+    sScriptMgr->OnGetDiminishingReturnsGroupType(group, type);
+    return type;
+}
+
 DiminishingLevels GetDiminishingReturnsMaxLevel(DiminishingGroup group)
 {
     switch (group)
@@ -321,7 +335,7 @@ DiminishingLevels GetDiminishingReturnsMaxLevel(DiminishingGroup group)
     }
 }
 
-int32 GetDiminishingReturnsLimitDuration(DiminishingGroup group, SpellInfo const* spellproto)
+static int32 GetCoreDiminishingReturnsLimitDuration(DiminishingGroup group, SpellInfo const* spellproto)
 {
     if (!IsDiminishingReturnsGroupDurationLimited(group))
         return 0;
@@ -374,6 +388,13 @@ int32 GetDiminishingReturnsLimitDuration(DiminishingGroup group, SpellInfo const
     }
 
     return 10 * IN_MILLISECONDS;
+}
+
+int32 GetDiminishingReturnsLimitDuration(DiminishingGroup group, SpellInfo const* spellproto)
+{
+    int32 duration = GetCoreDiminishingReturnsLimitDuration(group, spellproto);
+    sScriptMgr->OnGetDiminishingReturnsLimitDuration(group, spellproto, duration);
+    return duration;
 }
 
 bool IsDiminishingReturnsGroupDurationLimited(DiminishingGroup group)

@@ -650,6 +650,9 @@ public: /* SpellSC */
     void OnRemoveAuraScaleTargets(Spell* spell, TargetInfo& targetInfo, uint8 auraScaleMask, bool& needErase);
     void OnBeforeAuraRankForLevel(SpellInfo const* spellInfo, SpellInfo const* latestSpellInfo, uint8 level);
     void OnIsAuraExclusiveBySpecificWith(SpellInfo const* spellInfo, SpellInfo const* otherSpellInfo, bool& isExclusive);
+    void OnGetDiminishingReturnsGroup(SpellInfo const* spellInfo, bool triggered, DiminishingGroup& group);
+    void OnGetDiminishingReturnsGroupType(DiminishingGroup group, DiminishingReturnsType& type);
+    void OnGetDiminishingReturnsLimitDuration(DiminishingGroup group, SpellInfo const* spellInfo, int32& duration);
     void OnDummyEffect(WorldObject* caster, uint32 spellID, SpellEffIndex effIndex, GameObject* gameObjTarget);
     void OnDummyEffect(WorldObject* caster, uint32 spellID, SpellEffIndex effIndex, Creature* creatureTarget);
     void OnDummyEffect(WorldObject* caster, uint32 spellID, SpellEffIndex effIndex, Item* itemTarget);

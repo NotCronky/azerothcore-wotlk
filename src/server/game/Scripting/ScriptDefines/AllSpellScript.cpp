@@ -64,6 +64,21 @@ void ScriptMgr::OnIsAuraExclusiveBySpecificWith(SpellInfo const* spellInfo, Spel
     CALL_ENABLED_HOOKS(AllSpellScript, ALLSPELLHOOK_ON_IS_AURA_EXCLUSIVE_BY_SPECIFIC_WITH, script->OnIsAuraExclusiveBySpecificWith(spellInfo, otherSpellInfo, isExclusive));
 }
 
+void ScriptMgr::OnGetDiminishingReturnsGroup(SpellInfo const* spellInfo, bool triggered, DiminishingGroup& group)
+{
+    CALL_ENABLED_HOOKS(AllSpellScript, ALLSPELLHOOK_ON_GET_DIMINISHING_RETURNS_GROUP, script->OnGetDiminishingReturnsGroup(spellInfo, triggered, group));
+}
+
+void ScriptMgr::OnGetDiminishingReturnsGroupType(DiminishingGroup group, DiminishingReturnsType& type)
+{
+    CALL_ENABLED_HOOKS(AllSpellScript, ALLSPELLHOOK_ON_GET_DIMINISHING_RETURNS_GROUP_TYPE, script->OnGetDiminishingReturnsGroupType(group, type));
+}
+
+void ScriptMgr::OnGetDiminishingReturnsLimitDuration(DiminishingGroup group, SpellInfo const* spellInfo, int32& duration)
+{
+    CALL_ENABLED_HOOKS(AllSpellScript, ALLSPELLHOOK_ON_GET_DIMINISHING_RETURNS_LIMIT_DURATION, script->OnGetDiminishingReturnsLimitDuration(group, spellInfo, duration));
+}
+
 void ScriptMgr::OnDummyEffect(WorldObject* caster, uint32 spellID, SpellEffIndex effIndex, GameObject* gameObjTarget)
 {
     CALL_ENABLED_HOOKS(AllSpellScript, ALLSPELLHOOK_ON_DUMMY_EFFECT_GAMEOBJECT, script->OnDummyEffect(caster, spellID, effIndex, gameObjTarget));
