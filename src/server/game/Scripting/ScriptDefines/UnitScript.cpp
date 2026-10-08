@@ -89,6 +89,11 @@ bool ScriptMgr::CanSetPhaseMask(Unit const* unit, uint32 newPhaseMask, bool upda
     CALL_ENABLED_BOOLEAN_HOOKS(UnitScript, UNITHOOK_CAN_SET_PHASE_MASK, !script->CanSetPhaseMask(unit, newPhaseMask, update));
 }
 
+bool ScriptMgr::CanStartCriticalHitReactives(Unit const* unit)
+{
+    CALL_ENABLED_BOOLEAN_HOOKS_WITH_DEFAULT_FALSE(UnitScript, UNITHOOK_CAN_START_CRITICAL_HIT_REACTIVES, script->CanStartCriticalHitReactives(unit));
+}
+
 bool ScriptMgr::IsCustomBuildValuesUpdate(Unit const* unit, uint8 updateType, ByteBuffer& fieldBuffer, Player const* target, uint16 index)
 {
     CALL_ENABLED_BOOLEAN_HOOKS_WITH_DEFAULT_FALSE(UnitScript, UNITHOOK_IS_CUSTOM_BUILD_VALUES_UPDATE, script->IsCustomBuildValuesUpdate(unit, updateType, fieldBuffer, target, index));

@@ -12412,6 +12412,18 @@ void Unit::ProcSkillsAndReactives(bool isVictim, Unit* target, uint32 procFlag, 
                     AddComboPoints(target, 1);
                     StartReactiveTimer(REACTIVE_WOLVERINE_BITE);
                 }
+
+                // Critical strike states for 2.4.3 spells (Rampage, Kill Command), when a script turns them on
+                if ((procExtra & PROC_EX_CRITICAL_HIT) && sScriptMgr->CanStartCriticalHitReactives(this))
+                {
+                    ModifyAuraState(AURA_STATE_CRIT, true);
+                    StartReactiveTimer(REACTIVE_CRIT);
+                    if (IsClass(CLASS_HUNTER, CLASS_CONTEXT_ABILITY_REACTIVE))
+                    {
+                        ModifyAuraState(AURA_STATE_HUNTER_CRIT_STRIKE, true);
+                        StartReactiveTimer(REACTIVE_HUNTER_CRIT);
+                    }
+                }
             }
         }
     }
@@ -12899,6 +12911,10 @@ void Unit::ClearAllReactives()
         ModifyAuraState(AURA_STATE_HUNTER_PARRY, false);
     if (IsClass(CLASS_WARRIOR, CLASS_CONTEXT_ABILITY_REACTIVE) && IsPlayer())
         ClearComboPoints();
+    if (HasAuraState(AURA_STATE_CRIT))
+        ModifyAuraState(AURA_STATE_CRIT, false);
+    if (IsClass(CLASS_HUNTER, CLASS_CONTEXT_ABILITY_REACTIVE) && HasAuraState(AURA_STATE_HUNTER_CRIT_STRIKE))
+        ModifyAuraState(AURA_STATE_HUNTER_CRIT_STRIKE, false);
 }
 
 void Unit::UpdateReactives(uint32 p_time)
@@ -12933,6 +12949,14 @@ void Unit::UpdateReactives(uint32 p_time)
                 case REACTIVE_WOLVERINE_BITE:
                     if (IsHunterPet())
                         ClearComboPoints();
+                    break;
+                case REACTIVE_CRIT:
+                    if (HasAuraState(AURA_STATE_CRIT))
+                        ModifyAuraState(AURA_STATE_CRIT, false);
+                    break;
+                case REACTIVE_HUNTER_CRIT:
+                    if (IsClass(CLASS_HUNTER, CLASS_CONTEXT_ABILITY_REACTIVE) && HasAuraState(AURA_STATE_HUNTER_CRIT_STRIKE))
+                        ModifyAuraState(AURA_STATE_HUNTER_CRIT_STRIKE, false);
                     break;
                 default:
                     break;

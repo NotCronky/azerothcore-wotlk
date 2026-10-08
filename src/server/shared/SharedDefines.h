@@ -1288,7 +1288,8 @@ enum AuraStateType
     AURA_STATE_BANISHED                     = 8,            //  c t| banished
     //AURA_STATE_UNKNOWN9                   = 9,            //     |
     AURA_STATE_WARRIOR_VICTORY_RUSH         = 10,           // C   | warrior victory rush
-    //AURA_STATE_UNKNOWN11                  = 11,           // C  t| 60348 - Maelstrom Ready!, test spells
+    AURA_STATE_HUNTER_CRIT_STRIKE           = 10,           // C   | 2.4.3: a hunter's critical strike (Kill Command)
+    AURA_STATE_CRIT                         = 11,           // C  t| 2.4.3: a critical strike (Rampage); 60348 - Maelstrom Ready!, test spells
     AURA_STATE_FAERIE_FIRE                  = 12,           //  c t|
     AURA_STATE_HEALTHLESS_35_PERCENT        = 13,           // C T |
     AURA_STATE_CONFLAGRATE                  = 14,           //   T |

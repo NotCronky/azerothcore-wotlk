@@ -44,6 +44,7 @@ enum UnitHook
     UNITHOOK_ON_UNIT_EXIT_COMBAT,
     UNITHOOK_ON_UNIT_DEATH,
     UNITHOOK_ON_UNIT_SET_SHAPESHIFT_FORM,
+    UNITHOOK_CAN_START_CRITICAL_HIT_REACTIVES,
     UNITHOOK_END
 };
 
@@ -88,6 +89,16 @@ public:
     [[nodiscard]] virtual bool IfNormalReaction(Unit const* /*unit*/, Unit const* /*target*/, ReputationRank& /*repRank*/) { return true; }
 
     [[nodiscard]] virtual bool CanSetPhaseMask(Unit const* /*unit*/, uint32 /*newPhaseMask*/, bool /*update*/) { return true; }
+
+    /**
+     * @brief Whether a critical strike by this unit opens the critical strike reactive aura states for a few seconds
+     * (AURA_STATE_CRIT, and AURA_STATE_HUNTER_CRIT_STRIKE for a hunter), which 2.4.3 spells need (Rampage, Kill
+     * Command). 3.3.5 spells don't use them, so they stay off unless a script turns them on.
+     *
+     * @param unit Contains information about the unit that landed the critical strike
+     * @return True to open the states
+     */
+    [[nodiscard]] virtual bool CanStartCriticalHitReactives(Unit const* /*unit*/) { return false; }
 
     [[nodiscard]] virtual bool IsCustomBuildValuesUpdate(Unit const* /*unit*/, uint8 /*updateType*/, ByteBuffer& /*fieldBuffer*/, Player const* /*target*/, uint16 /*index*/) { return false; }
 

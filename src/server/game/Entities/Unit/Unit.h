@@ -621,6 +621,8 @@ enum ReactiveType
     REACTIVE_HUNTER_PARRY   = 1,
     REACTIVE_OVERPOWER      = 2,
     REACTIVE_WOLVERINE_BITE = 3,
+    REACTIVE_CRIT           = 4,    // only when UnitScript::CanStartCriticalHitReactives allows
+    REACTIVE_HUNTER_CRIT    = 5,    // same
 
     MAX_REACTIVE
 };
