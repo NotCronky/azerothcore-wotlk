@@ -4308,9 +4308,12 @@ int32 Unit::GetHighestExclusiveSameEffectSpellGroupValue(AuraEffect const* aurEf
 
 bool Unit::IsHighestExclusiveAura(Aura const* aura, bool removeOtherAuraApplications /*= false*/)
 {
+    // compare one application's strength: a stacked aura's amount is its stack count times that
+    uint8 stacks = std::max<uint8>(1, aura->GetStackAmount());
     for (uint32 i = 0 ; i < MAX_SPELL_EFFECTS; ++i)
         if (AuraEffect const* aurEff = aura->GetEffect(i))
-            if (!IsHighestExclusiveAuraEffect(aura->GetSpellInfo(), aurEff->GetAuraType(), aurEff->GetAmount(), aura->GetEffectMask(), removeOtherAuraApplications))
+            if (!IsHighestExclusiveAuraEffect(aura->GetSpellInfo(), aurEff->GetAuraType(), aurEff->GetAmount() / stacks,
+                aura->GetEffectMask(), removeOtherAuraApplications))
                 return false;
 
     return true;
@@ -4326,7 +4329,10 @@ bool Unit::IsHighestExclusiveAuraEffect(SpellInfo const* spellInfo, AuraType aur
 
         if (sSpellMgr->CheckSpellGroupStackRules(spellInfo, existingAurEff->GetSpellInfo()) == SPELL_GROUP_STACK_RULE_EXCLUSIVE_HIGHEST)
         {
-            int32 diff = abs(effectAmount) - abs(existingAurEff->GetAmount());
+            // per application, so a stacking aura (1.12 Sunder Armor) can still add its own stacks
+            int32 existingAmount = existingAurEff->GetAmount()
+                / std::max<uint8>(1, existingAurEff->GetBase()->GetStackAmount());
+            int32 diff = abs(effectAmount) - abs(existingAmount);
             if (!diff)
                 for (int32 i = 0; i < MAX_SPELL_EFFECTS; ++i)
                     diff += int32((auraEffectMask & (1 << i)) >> i) - int32((existingAurEff->GetBase()->GetEffectMask() & (1 << i)) >> i);
