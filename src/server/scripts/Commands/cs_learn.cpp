@@ -111,8 +111,11 @@ public:
         Player* player = handler->GetPlayer();
         for (auto const& questPair : sObjectMgr->GetQuestTemplates())
         {
+            // Only class quests the player could do: its race too (race-only versions such as the Blood Elf
+            // paladin's Thalassian Warhorse) and its level, as the trainer command only teaches up to the level.
             Quest const* quest = questPair.second;
-            if (quest->GetRequiredClasses() && player->SatisfyQuestClass(quest, false))
+            if (quest->GetRequiredClasses() && player->SatisfyQuestClass(quest, false) &&
+                player->SatisfyQuestRace(quest, false) && player->GetLevel() >= quest->GetMinLevel())
                 player->learnQuestRewardedSpells(quest);
         }
 
