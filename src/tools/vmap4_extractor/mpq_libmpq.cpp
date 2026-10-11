@@ -17,8 +17,11 @@
 
 #include "mpq_libmpq04.h"
 #include <algorithm>
+#include <cctype>
 #include <cstdio>
+#include <cstdlib>
 #include <deque>
+#include <string>
 
 ArchiveSet gOpenArchives;
 
@@ -65,12 +68,50 @@ void MPQArchive::close()
     libmpq__archive_close(mpq_a);
 }
 
+// Loose files that take the place of the archives' copies: converted data from another client build, such as the
+// progressive realms' era world tiles. ACORE_EXTRACT_OVERLAY names a folder holding the files by archive path, in
+// lower case and with '/' in place of '\\'.
+static bool ReadOverlayFile(char const* filename, char*& buffer, libmpq__off_t& size)
+{
+    static char const* overlay = std::getenv("ACORE_EXTRACT_OVERLAY");
+    if (!overlay)
+        return false;
+
+    std::string path(filename);
+    std::transform(path.begin(), path.end(), path.begin(), [](unsigned char c)
+    {
+        return static_cast<char>(c == '\\' ? '/' : std::tolower(c));
+    });
+    path = std::string(overlay) + "/" + path;
+
+    FILE* file = fopen(path.c_str(), "rb");
+    if (!file)
+        return false;
+
+    fseek(file, 0, SEEK_END);
+    size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    buffer = new char[size];
+    bool const read = fread(buffer, 1, size, file) == std::size_t(size);
+    fclose(file);
+    if (!read)
+    {
+        delete[] buffer;
+        buffer = nullptr;
+        size = 0;
+    }
+    return read;
+}
+
 MPQFile::MPQFile(char const* filename):
     eof(false),
     buffer(nullptr),
     pointer(0),
     size(0)
 {
+    if (ReadOverlayFile(filename, buffer, size))
+        return;
+
     for (auto & gOpenArchive : gOpenArchives)
     {
         mpq_archive* mpq_a = gOpenArchive->mpq_a;
