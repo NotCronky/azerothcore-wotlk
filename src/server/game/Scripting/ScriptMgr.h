@@ -573,6 +573,7 @@ public: /* UnitScript */
     bool IfNormalReaction(Unit const* unit, Unit const* target, ReputationRank& repRank);
     bool CanSetPhaseMask(Unit const* unit, uint32 newPhaseMask, bool update);
     bool CanStartCriticalHitReactives(Unit const* unit);
+    void ModifySpellTakenCritChance(Unit const* victim, Unit const* caster, SpellInfo const* spellInfo, float& critChance);
     bool IsCustomBuildValuesUpdate(Unit const* unit, uint8 updateType, ByteBuffer& fieldBuffer, Player const* target, uint16 index);
     bool ShouldTrackValuesUpdatePosByIndex(Unit const* unit, uint8 updateType, uint16 index);
     void OnPatchValuesUpdate(Unit const* unit, ByteBuffer& valuesUpdateBuf, BuildValuesCachePosPointers& posPointers, Player* target);

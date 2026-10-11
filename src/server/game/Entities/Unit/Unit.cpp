@@ -9131,6 +9131,8 @@ float Unit::SpellTakenCritChance(Unit const* caster, SpellInfo const* spellProto
     if (!spellProto->IsPositive())
         crit_chance += GetTotalAuraModifier(SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE);
 
+    sScriptMgr->ModifySpellTakenCritChance(this, caster, spellProto, crit_chance);
+
     // xinef: can be negative!
     return crit_chance;
 }

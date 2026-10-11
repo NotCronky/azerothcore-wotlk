@@ -94,6 +94,11 @@ bool ScriptMgr::CanStartCriticalHitReactives(Unit const* unit)
     CALL_ENABLED_BOOLEAN_HOOKS_WITH_DEFAULT_FALSE(UnitScript, UNITHOOK_CAN_START_CRITICAL_HIT_REACTIVES, script->CanStartCriticalHitReactives(unit));
 }
 
+void ScriptMgr::ModifySpellTakenCritChance(Unit const* victim, Unit const* caster, SpellInfo const* spellInfo, float& critChance)
+{
+    CALL_ENABLED_HOOKS(UnitScript, UNITHOOK_MODIFY_SPELL_TAKEN_CRIT_CHANCE, script->ModifySpellTakenCritChance(victim, caster, spellInfo, critChance));
+}
+
 bool ScriptMgr::IsCustomBuildValuesUpdate(Unit const* unit, uint8 updateType, ByteBuffer& fieldBuffer, Player const* target, uint16 index)
 {
     CALL_ENABLED_BOOLEAN_HOOKS_WITH_DEFAULT_FALSE(UnitScript, UNITHOOK_IS_CUSTOM_BUILD_VALUES_UPDATE, script->IsCustomBuildValuesUpdate(unit, updateType, fieldBuffer, target, index));

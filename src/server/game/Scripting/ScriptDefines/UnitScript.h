@@ -45,6 +45,7 @@ enum UnitHook
     UNITHOOK_ON_UNIT_DEATH,
     UNITHOOK_ON_UNIT_SET_SHAPESHIFT_FORM,
     UNITHOOK_CAN_START_CRITICAL_HIT_REACTIVES,
+    UNITHOOK_MODIFY_SPELL_TAKEN_CRIT_CHANCE,
     UNITHOOK_END
 };
 
@@ -99,6 +100,17 @@ public:
      * @return True to open the states
      */
     [[nodiscard]] virtual bool CanStartCriticalHitReactives(Unit const* /*unit*/) { return false; }
+
+    /**
+     * @brief Called at the end of Unit::SpellTakenCritChance, to change a spell's critical strike chance against its
+     * target (talents keyed on the target's state, such as 1.12 / 2.4.3 Shatter against frozen targets).
+     *
+     * @param victim The spell's target
+     * @param caster The spell's caster (can be null)
+     * @param spellInfo The spell
+     * @param critChance The chance so far, in percent (can be negative)
+     */
+    virtual void ModifySpellTakenCritChance(Unit const* /*victim*/, Unit const* /*caster*/, SpellInfo const* /*spellInfo*/, float& /*critChance*/) { }
 
     [[nodiscard]] virtual bool IsCustomBuildValuesUpdate(Unit const* /*unit*/, uint8 /*updateType*/, ByteBuffer& /*fieldBuffer*/, Player const* /*target*/, uint16 /*index*/) { return false; }
 
