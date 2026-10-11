@@ -15444,9 +15444,17 @@ void Player::_LoadTalents(PreparedQueryResult result)
             // xinef: checked
             uint32 spellId = (*result)[0].Get<uint32>();
             uint8 specMask = (*result)[1].Get<uint8>();
+
+            // A saved talent the talent data no longer has (the realm's talent trees were replaced): skip it
+            // rather than stop the server. The character gets the points back to spend again.
+            if (!GetTalentSpellPos(spellId))
+            {
+                LOG_ERROR("entities.player", "Player::_LoadTalents: {} has talent spell {} that isn't in the talent "
+                    "data, skipped", GetGUID().ToString(), spellId);
+                continue;
+            }
+
             addTalent(spellId, specMask, 0);
-            TalentSpellPos const* talentPos = GetTalentSpellPos(spellId);
-            ASSERT(talentPos);
 
         } while (result->NextRow());
     }
